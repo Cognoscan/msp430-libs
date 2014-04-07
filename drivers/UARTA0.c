@@ -1,16 +1,16 @@
-#include "UARTA.h"
+#include "UARTA0.h"
 
-#ifndef UARTA_TX_BUFFER_SIZE
-#define UARTA_TX_BUFFER_SIZE  32
+#ifndef UARTA0_TX_BUFFER_SIZE
+#define UARTA0_TX_BUFFER_SIZE  32
 #endif
-#ifndef UARTA_RX_BUFFER_SIZE
-#define UARTA_RX_BUFFER_SIZE  32
+#ifndef UARTA0_RX_BUFFER_SIZE
+#define UARTA0_RX_BUFFER_SIZE  32
 #endif
 
-uint8_t tx_buffer[UARTA_TX_BUFFER_SIZE];
-uint8_t rx_buffer[UARTA_RX_BUFFER_SIZE];
+uint8_t tx_buffer[UARTA0_TX_BUFFER_SIZE];
+uint8_t rx_buffer[UARTA0_RX_BUFFER_SIZE];
 
-void UARTA_Init(
+void UARTA0_Init(
     uint8_t clock_source,
     uint8_t clock_prescaler0,
     uint8_t clock_prescaler1,
@@ -20,9 +20,9 @@ void UARTA_Init(
     uint8_t msb_or_lsb_first,
     uint8_t oversampling)
 {
-  FIFO_Init(&UARTA_tx_buffer, tx_buffer, UARTA_TX_BUFFER_SIZE);
-  FIFO_Init(&UARTA_rx_buffer, rx_buffer, UARTA_RX_BUFFER_SIZE);
-  UARTA_transmitting = false;
+  FIFO_Init(&UARTA0_tx_buffer, tx_buffer, UARTA0_TX_BUFFER_SIZE);
+  FIFO_Init(&UARTA0_rx_buffer, rx_buffer, UARTA0_RX_BUFFER_SIZE);
+  UARTA0_transmitting = false;
 
   UCA0CTL0 = parity | msb_or_lsb_first;
   UCA0CTL1 = clock_source | UCSWRST;
@@ -34,35 +34,35 @@ void UARTA_Init(
   UCA0CTL1 &= ~UCSWRST;
 }
 
-void UARTA_EnableInterrupts() {
+void UARTA0_EnableInterrupts() {
   IE2 |= UCA0RXIE;
 }
 
-void UARTA_DisableInterrupts() {
+void UARTA0_DisableInterrupts() {
   IE2 |= UCA0RXIE;
 }
 
 //=============================================================================
 // UART Transmit Function
 //=============================================================================
-void UARTA_Send(uint8_t data)
+void UARTA0_Send(uint8_t data)
 {
 	// Put straight to UART if not yet transmitting
-	if (!UARTA_transmitting)
+	if (!UARTA0_transmitting)
 	{
 		UCA0TXBUF = data;
-		UARTA_transmitting = 1;
+		UARTA0_transmitting = 1;
 		IE2 |= UCA0TXIE;
 	  // Load data into TX buffer
 	} else {
 		// Make sure the buffer isn't full. Loop continuously if it is.
-    while(FIFO_Full(&UARTA_tx_buffer));
-    FIFO_Put(&UARTA_tx_buffer, data);
+    while(FIFO_Full(&UARTA0_tx_buffer));
+    FIFO_Put(&UARTA0_tx_buffer, data);
 	}
 }
 
-uint8_t UARTA_Receive()
+uint8_t UARTA0_Receive()
 {
-	return FIFO_Get(&UARTA_rx_buffer);
+	return FIFO_Get(&UARTA0_rx_buffer);
 }
 
