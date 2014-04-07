@@ -28,11 +28,10 @@
  */
 
 #include <stdint.h>
-#include <stdbool.h>
-#include "fifo.h"
+#include "FIFO.h"
 
 unsigned FIFO_Count (
-		FIFO_BUFFER const *b)
+		FIFO_Buffer const *b)
 {
 	if (b)
 	{
@@ -46,19 +45,19 @@ unsigned FIFO_Count (
 }
 
 bool FIFO_Full (
-		FIFO_BUFFER const *b)
+		FIFO_Buffer const *b)
 {
 	return (b ? (FIFO_Count(b) == (b->buffer_len - 1)) : true);
 }
 
 bool FIFO_Empty(
-		FIFO_BUFFER const *b)
+		FIFO_Buffer const *b)
 {
 	return (b ? (FIFO_Count(b) == 0) : true);
 }
 
 uint8_t FIFO_Peek(
-		FIFO_BUFFER const *b)
+		FIFO_Buffer const *b)
 {
 	if (b) {
 		return (b->buffer[b->tail]);
@@ -67,7 +66,7 @@ uint8_t FIFO_Peek(
 }
 
 uint8_t FIFO_Get(
-		FIFO_BUFFER * b)
+		FIFO_Buffer * b)
 {
 	uint8_t data_byte = 0;
 
@@ -83,7 +82,7 @@ uint8_t FIFO_Get(
 }
 
 bool FIFO_Put(
-		FIFO_BUFFER * b,
+		FIFO_Buffer * b,
 		uint8_t data_byte)
 {
 	bool status = false;
@@ -106,7 +105,7 @@ bool FIFO_Put(
 
 // Buffer length must be power of two
 void FIFO_Init(
-		FIFO_BUFFER * b,
+		FIFO_Buffer * b,
 		volatile uint8_t *buffer,
 		unsigned buffer_len)
 {

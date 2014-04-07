@@ -24,7 +24,7 @@
  * SOFTWARE.
  */
 
-static void __inline__ brief_pause(register unsigned int n)
+static void __inline__ DelayCycles(register unsigned int n)
 {
     __asm__ __volatile__ (
                 "1: \n"
