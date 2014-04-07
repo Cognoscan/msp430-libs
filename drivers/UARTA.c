@@ -66,26 +66,3 @@ uint8_t UARTA_Receive()
 	return FIFO_Get(&UARTA_rx_buffer);
 }
 
-//=============================================================================
-// UART RX Interrupt
-//=============================================================================
-void __interrupt(USCIAB0RX_VECTOR) UART_Rx_ISR(void)
-{
-	FIFO_Put(&UARTA_rx_buffer, UCA0RXBUF);
-	_bic_SR_register_on_exit(LPM0_bits);
-}
-
-//=============================================================================
-// UART TX Interrupt
-//=============================================================================
-void __interrupt(USCIAB0TX_VECTOR) UART_Tx_ISR(void)
-{
-  if (!FIFO_Empty(&UARTA_tx_buffer))
-  {
-    UCA0TXBUF = FIFO_Get(&UARTA_tx_buffer);
-	// No more data left in buffer, so disable interrupt and let transmitting=0
-	} else {
-		UARTA_transmitting = false;
-		IE2 &= ~UCA0TXIE;
-	}
-}

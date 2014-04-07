@@ -46,4 +46,29 @@ void UARTA_EnableInterrupts();
 void UARTA_DisableInterrupts();
 //void UARTA_SendBreak(); Not yet implemented
 
+//=============================================================================
+// UART RX Interrupt
+//=============================================================================
+inline static void UARTA_RX_ISR(void) __attribute__((always_inline));
+inline static void UARTA_RX_ISR(void)
+{
+	FIFO_Put(&UARTA_rx_buffer, UCA0RXBUF);
+}
+
+//=============================================================================
+// UART TX Interrupt
+//=============================================================================
+inline static void UARTA_TX_ISR(void) __attribute__((always_inline));
+inline static void UARTA_TX_ISR(void)
+{
+  if (!FIFO_Empty(&UARTA_tx_buffer))
+  {
+    UCA0TXBUF = FIFO_Get(&UARTA_tx_buffer);
+	// No more data left in buffer, so disable interrupt and let transmitting=0
+	} else {
+		UARTA_transmitting = false;
+		IE2 &= ~UCA0TXIE;
+	}
+}
+
 #endif
