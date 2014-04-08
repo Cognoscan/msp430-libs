@@ -1,38 +1,33 @@
+/*
+ * @file UARTA0.c
+ * @brief Driver for UART on MSP430 USCI A0.
+ * @author Scott Teal (Scott@Teals.org)
+ * @date 2014-04-06
+ * @copyright
+ *
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2014 Scott Teal
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "UARTA0.h"
-
-#ifndef UARTA0_TX_BUFFER_SIZE
-#define UARTA0_TX_BUFFER_SIZE  32
-#endif
-#ifndef UARTA0_RX_BUFFER_SIZE
-#define UARTA0_RX_BUFFER_SIZE  32
-#endif
-
-uint8_t tx_buffer[UARTA0_TX_BUFFER_SIZE];
-uint8_t rx_buffer[UARTA0_RX_BUFFER_SIZE];
-
-void UARTA0_Init(
-    uint8_t clock_source,
-    uint8_t clock_prescaler0,
-    uint8_t clock_prescaler1,
-    uint8_t first_mod_reg,
-    uint8_t second_mod_reg,
-    uint8_t parity,
-    uint8_t msb_or_lsb_first,
-    uint8_t oversampling)
-{
-  FIFO_Init(&UARTA0_tx_buffer, tx_buffer, UARTA0_TX_BUFFER_SIZE);
-  FIFO_Init(&UARTA0_rx_buffer, rx_buffer, UARTA0_RX_BUFFER_SIZE);
-  UARTA0_transmitting = false;
-
-  UCA0CTL0 = parity | msb_or_lsb_first;
-  UCA0CTL1 = clock_source | UCSWRST;
-
-  UCA0BR0 = clock_prescaler0;
-  UCA0BR1 = clock_prescaler1;
-  UCA0MCTL = first_mod_reg | second_mod_reg | oversampling;
-
-  UCA0CTL1 &= ~UCSWRST;
-}
 
 void UARTA0_EnableInterrupts() {
   IE2 |= UCA0RXIE;

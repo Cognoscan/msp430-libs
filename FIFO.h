@@ -1,12 +1,13 @@
 /*
- * FIFO.h
- *
- *  Created on: Sep 25, 2012
- *      Author: Scott-Admin
+ * @file FIFO.h
+ * @brief FIFO Buffer implementation
+ * @author Scott Teal (Scott@Teals.org)
+ * @date 2012-09-25
+ * @copyright
  *
  * The MIT License (MIT)
  * 
- * Copyright (c) 2014 Cognoscan
+ * Copyright (c) 2014 Scott Teal
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +35,11 @@
 #include <stdbool.h>
 
 struct fifo_buffer_t {
-	volatile unsigned head;		// 1st byte location
-	volatile unsigned tail;		// last byte location
-	volatile uint8_t *buffer;	// buffer block
-	unsigned buffer_len;		// length of the buffer
+	volatile unsigned head;   // 1st byte location
+	volatile unsigned tail;   // last byte location
+	volatile uint8_t *buffer; // buffer block
+	uint8_t buffer_len;       // length of the buffer
+  uint8_t count;            // bytes currently in buffer
 };
 
 typedef struct fifo_buffer_t FIFO_Buffer;
@@ -46,11 +48,26 @@ typedef struct fifo_buffer_t FIFO_Buffer;
 extern "C" {
 #endif /* __cplusplus */
 
-bool FIFO_Empty(FIFO_Buffer const *b);
+static inline uint8_t FIFO_Count (FIFO_Buffer const *b)
+{
+  return b->count;
+}
 
-bool FIFO_Full(FIFO_Buffer const *b);
+static inline bool FIFO_Full (FIFO_Buffer const *b)
+{
+  return (b->count == (b->buffer_len -1));
+}
 
-uint8_t FIFO_Peek(FIFO_Buffer const *b);
+static inline bool FIFO_Empty(FIFO_Buffer const *b)
+{
+  return (b->count == 0);
+}
+
+static inline uint8_t FIFO_Peek(
+    FIFO_Buffer const *b)
+{
+  return (b->buffer[b->tail]);
+}
 
 uint8_t FIFO_Get(FIFO_Buffer * b);
 
