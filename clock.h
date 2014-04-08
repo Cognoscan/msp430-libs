@@ -3,6 +3,12 @@
 
 #include <msp430.h>
 
+/// Turn off Watchdog Timer
+static inline void WatchdogOff()
+{
+	WDTCTL = WDTPW | WDTHOLD;
+}
+
 /// Set DCO to Calibrated 1 MHz frequency
 static inline void DCO1MHz()
 {
