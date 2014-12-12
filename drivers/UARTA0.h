@@ -100,7 +100,7 @@ bool UARTA0_transmitting;
  * Send a byte over UART.
  * @param data Byte to send.
  */
-void UARTA0_Send(uint8_t data);
+void UARTA0_Send(char data);
 
 /* Retrieve a byte from UART buffer.
  * @returns Byte from UART buffer or 0.

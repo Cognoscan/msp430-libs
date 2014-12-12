@@ -1,8 +1,8 @@
 /*
- * @file UARTA0.c
- * @brief Driver for UART on MSP430 USCI A0.
+ * @file ADC10.h
+ * @brief Driver for ADC10 on MSP430.
  * @author Scott Teal (Scott@Teals.org)
- * @date 2014-04-06
+ * @date 2014-04-07
  * @copyright
  *
  * The MIT License (MIT)
@@ -27,37 +27,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "UARTA0.h"
 
-void UARTA0_EnableInterrupts() {
-  IE2 |= UCA0RXIE;
-}
+#ifndef _ADC10_H_
+#define _ADC10_H_
 
-void UARTA0_DisableInterrupts() {
-  IE2 |= UCA0RXIE;
-}
+#include <msp430.h>
+#include <stdint.h>
 
-//=============================================================================
-// UART Transmit Function
-//=============================================================================
-void UARTA0_Send(char data)
+/**
+ * Read from the given analog channel.
+ * @param channel The channel number to read from (0 to 15)
+ * @returns The raw 10-bit analog value from the ADC
+ */
+int16_t ADC10_AnalogRead(const uint8_t channel);
+
+/**
+ * Read the internal temperature sensor.
+ * @returns the temperature in degrees celsius.
+ */
+float ADC10_TempRead();
+
+/// Initialize the temperature compensation constants
+void ADC10_TempInit();
+
+static inline void ADC10_EnableAnalog(const uint8_t channel)
 {
-	// Put straight to UART if not yet transmitting
-	if (!UARTA0_transmitting)
-	{
-		UCA0TXBUF = data;
-		UARTA0_transmitting = 1;
-		IE2 |= UCA0TXIE;
-	  // Load data into TX buffer
-	} else {
-		// Make sure the buffer isn't full. Loop continuously if it is.
-    while(FIFO_Full(&UARTA0_tx_buffer));
-    FIFO_Put(&UARTA0_tx_buffer, data);
-	}
+  ADC10AE0 |= (0x1 << channel);
 }
 
-uint8_t UARTA0_Receive()
+static inline void ADC10_DisableAnalog(const uint8_t channel)
 {
-	return FIFO_Get(&UARTA0_rx_buffer);
+  ADC10AE0 &= ~(0x1 << channel);
 }
 
+#endif
