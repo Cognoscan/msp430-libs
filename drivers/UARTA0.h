@@ -42,13 +42,15 @@
  *  Simple example ISRs:
  * ~~~{.c}
  *
- * void __interrupt(USCIAB0RX_VECTOR) USCI_AB0_RX_ISR(void)
+ * __attribute__((interrupt(USCIAB0RX_VECTOR)))
+ * void USCI_AB0_RX_ISR(void)
  * {
  * 	UARTA0_RX_ISR();
  * 	_bic_SR_register_on_exit(LPM0_bits);
  * }
  * 
- * void __interrupt(USCIAB0TX_VECTOR) USCI_AB0_TX_ISR(void)
+ * __attribute__((interrupt(USCIAB0TX_VECTOR)))
+ * void USCI_AB0_TX_ISR(void)
  * {
  * 	UARTA0_TX_ISR();
  * }

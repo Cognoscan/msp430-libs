@@ -38,8 +38,8 @@ struct fifo_buffer_t {
 	volatile unsigned head;   // 1st byte location
 	volatile unsigned tail;   // last byte location
 	volatile uint8_t *buffer; // buffer block
-	uint8_t buffer_len;       // length of the buffer
-  uint8_t count;            // bytes currently in buffer
+	volatile uint8_t buffer_len;       // length of the buffer
+  volatile uint8_t count;            // bytes currently in buffer
 };
 
 typedef struct fifo_buffer_t FIFO_Buffer;
